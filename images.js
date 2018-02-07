@@ -23,6 +23,8 @@ window.onload = function() {
 				reader.readAsDataURL(file);	
 			} else {
 				fileDisplayArea.innerHTML = "File not supported!";
+				console.log(file.type);
+				
 			}
 		});
 

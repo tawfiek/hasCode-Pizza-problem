@@ -1,31 +1,33 @@
-window.onload = function() {
+/*eslint no-unused-vars: "error"*/
+/*eslint no-unused-vars: ["error", { "args": "none" }]*/
+/*global window , document,FileReader,Image*/
+window.onload = function () {
+    "use strict";
+    var fileInput = document.getElementById('fileInput'),
+        fileDisplayArea = document.getElementById('fileDisplayArea');
+    fileInput.addEventListener('change', function (e) {
+        var file = fileInput.files[0],
+            imageType = /image*/,
+            reader;
 
-		var fileInput = document.getElementById('fileInput');
-		var fileDisplayArea = document.getElementById('fileDisplayArea');
+        if (file.type.match(imageType)) {
+            reader = new FileReader();
 
+            reader.onload = function (e) {
+                fileDisplayArea.innerHTML = "";
 
-		fileInput.addEventListener('change', function(e) {
-			var file = fileInput.files[0];
-			var imageType = /image.*/;
+				var img = new Image();
+				img.src = reader.result;
 
-			if (file.type.match(imageType)) {
-				var reader = new FileReader();
+				fileDisplayArea.appendChild(img);
+            };
 
-				reader.onload = function(e) {
-					fileDisplayArea.innerHTML = "";
-
-					var img = new Image();
-					img.src = reader.result;
-
-					fileDisplayArea.appendChild(img);
-				}
-
-				reader.readAsDataURL(file);	
-			} else {
-				fileDisplayArea.innerHTML = "File not supported!";
-				console.log(file.type);
+            reader.readAsDataURL(file);
+        } else {
+            fileDisplayArea.innerHTML = "File not supported!";
+				//console.log(file.type);
 				
-			}
-		});
+        }
+    });
 
-}
+};

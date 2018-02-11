@@ -13,8 +13,8 @@ window.onload = function () {
 			let text = reader.result;
 			fileDisplayArea.innerText = reader.result;
 			//seprate string in arrays 
-			this.allArraies = seprateString(reader.result);
-			console.log(this.allArraies);
+			this.allArrays = seprateString(reader.result);
+			console.log(this.allArrays);
         };
 		reader.readAsText(file);
 		
@@ -33,6 +33,5 @@ window.onload = function () {
 		}
 		
 		return allArrays ; 
-		
 	}
 };

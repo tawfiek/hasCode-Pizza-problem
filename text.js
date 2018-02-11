@@ -9,10 +9,30 @@ window.onload = function () {
     fileInput.addEventListener('change', function (e) {
         var file = fileInput.files[0],
             reader = new FileReader();
-        //console.log(file.type);
 		reader.onload = function (e) {
-            fileDisplayArea.innerText = reader.result;
+			let text = reader.result;
+			fileDisplayArea.innerText = reader.result;
+			//seprate string in arrays 
+			this.allArraies = seprateString(reader.result);
+			console.log(this.allArraies);
         };
-        reader.readAsText(file);
-    });
+		reader.readAsText(file);
+		
+	});
+	
+	function seprateString (text){
+		let allArrays = []
+		let  arr = [];
+		for (let i in text){
+			if (text[i] !== '\n'){
+				arr.push(text[i]);
+			} else {
+				allArrays.push(arr);
+				arr=[];
+			}
+		}
+		
+		return allArrays ; 
+		
+	}
 };

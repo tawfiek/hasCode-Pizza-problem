@@ -6,38 +6,49 @@ window.onload = function () {
     "use strict";
     var fileInput = document.getElementById('fileInput'),
         fileDisplayArea = document.getElementById('fileDisplayArea');
-    fileInput.addEventListener('change', function (e) {
+    	fileInput.addEventListener('change', function (e) {
         var file = fileInput.files[0],
             reader = new FileReader();
 		reader.onload = function (e) {
 			let text = reader.result;
 			fileDisplayArea.innerText = reader.result;
 			//seprate string in arrays 
-			this.allArrays = seprateString(reader.result);
-			console.log(this.allArrays);
+			seprateString(reader.result);
+			console.log(window.allArrays);
+			console.log(window.condtions);
+			
+			
         };
 		reader.readAsText(file);
 		
 	});
-	
-	function seprateString (text){
-		let allArrays = []
-		let  arr = [];
-		for (let i in text){
-			if (text[i] !== '\n'){
-				arr.push(text[i]);
-			} else {
-				allArrays.push(arr);
-				arr=[];
-			}
-		}
-        var r = allArrays[0][0],
-	       c = allArrays[0][2],
-	       l = allArrays[0][4],
-	       h = allArrays[0][6];
-	       allArrays = allArrays.slice(1);
-		 
-		return allArrays ; 
-	}
     
 };
+
+function seprateString (text){
+	let allArrays = []
+	let  arr = [];
+	for (let i in text){
+		if (text[i] !== '\n'){
+			arr.push(text[i]);
+		} else {
+			allArrays.push(arr);
+			arr=[];
+		}
+	}
+	this.condtions =  {
+	noOfRows : allArrays[0][0],
+	noOfCols :  allArrays[0][2],
+	minNoOfIng : allArrays[0][4],
+	maxNoOfCells : allArrays[0][6],
+	minNoOfCells : 2*allArrays[0][4]
+	}
+	this.allArrays = allArrays.slice(1);
+	 
+	return this.allArrays ; 
+}
+
+function solveByRows(arraysOfRows){ 
+	console.log();
+	
+}

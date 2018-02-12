@@ -13,11 +13,8 @@ window.onload = function () {
 			let text = reader.result;
 			fileDisplayArea.innerText = reader.result;
 			//seprate string in arrays 
-			seprateString(reader.result);
-			console.log(window.allArrays);
-			console.log(window.condtions);
-			
-			
+			seprateString(text);
+			console.log(solveByRows(0,0, window.condtions.minNoOfCells));
         };
 		reader.readAsText(file);
 		
@@ -44,11 +41,29 @@ function seprateString (text){
 	minNoOfCells : 2*allArrays[0][4]
 	}
 	this.allArrays = allArrays.slice(1);
-	 
 	return this.allArrays ; 
 }
 
-function solveByRows(arraysOfRows){ 
-	console.log();
+function solveByRows(startRow ,startCol, noOfCells){ 
+	var noOfT = 0;
+	var noOfM = 0;
+	var start; 
+	var end; 
+	var currentNo = 0 ;
+	console.log(this);
 	
+
+	for ( index in this.allArrays[startRow]){
+		if (currentNo < noOfCells){
+			
+			if (this.allArrays[startRow][startCol + Number(index) ] == "T") noOfT++ ; 
+			if (this.allArrays[startRow][startCol + Number(index) ] == "M") noOfM++ ;
+			currentNo ++
+		} else return {
+			noOfT ,
+			noOfM ,
+			endcol : startCol + Number(index)-1,
+			endRow : startRow
+		}
+	}	
 }

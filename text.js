@@ -14,7 +14,7 @@ window.onload = function () {
 			fileDisplayArea.innerText = reader.result;
 			//seprate string in arrays 
 			seprateString(text);
-			console.log(solveByRows(0,0, window.condtions.minNoOfCells));
+			console.log(solveByCols(0,0, window.condtions.minNoOfCells));
         };
 		reader.readAsText(file);
 		
@@ -50,7 +50,6 @@ function solveByRows(startRow ,startCol, noOfCells){
 	var start; 
 	var end; 
 	var currentNo = 0 ;
-	console.log(this);
 	
 
 	for ( index in this.allArrays[startRow]){
@@ -59,11 +58,33 @@ function solveByRows(startRow ,startCol, noOfCells){
 			if (this.allArrays[startRow][startCol + Number(index) ] == "T") noOfT++ ; 
 			if (this.allArrays[startRow][startCol + Number(index) ] == "M") noOfM++ ;
 			currentNo ++
-		} else return {
-			noOfT ,
-			noOfM ,
-			endcol : startCol + Number(index)-1,
-			endRow : startRow
-		}
+		} else break;
+	}
+	return {
+		noOfT ,
+		noOfM ,
+		endcol : startCol + Number(index)-1,
+		endRow : startRow
 	}	
+}
+
+function solveByCols(startRow ,startCol, noOfCells) {
+	var noOfT = 0;
+	var noOfM = 0;
+	var start; 
+	var end; 
+	var currentNo = 0 ;
+	for ( index in this.allArrays) {
+		if (currentNo < noOfCells){
+			if (this.allArrays[startRow + Number(index)][startCol] == "T") noOfT++ ;
+			if (this.allArrays[startRow + Number(index)][startCol] == "M") noOfM++ ;
+			currentNo ++
+		}else break;
+	}
+	return {
+		noOfT ,
+		noOfM ,
+		endcol : startCol,
+		endRow : startRow + Number(index)-1
+	}
 }

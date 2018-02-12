@@ -31,7 +31,13 @@ window.onload = function () {
 				arr=[];
 			}
 		}
-		
+        var r = allArrays[0][0],
+	       c = allArrays[0][2],
+	       l = allArrays[0][4],
+	       h = allArrays[0][6];
+	       allArrays = allArrays.slice(1);
+		 
 		return allArrays ; 
 	}
+    
 };

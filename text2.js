@@ -16,7 +16,7 @@ window.onload = function () {
 			seprateString(reader.result);
 			console.log(window.allArrays);
 			console.log(window.condtions);
-			solveByRows(allArrays,condtions.minNoOfIng,condtions.maxNoOfCells);
+			solveByRows2(window.allArrays,window.condtions.minNoOfIng,window.condtions.maxNoOfCells);
 
 			
 			
@@ -38,62 +38,99 @@ function seprateString (text){
 			arr=[];
 		}
 	}
+	var conditionArray = [],
+		 hold = "";
+	for(var col =0;col<allArrays[0].length;col++){
+		if(allArrays[0][col] !== " " ){
+			hold += allArrays[0][col];
+		}else{
+			conditionArray.push(hold);
+			hold = "";
+		}
+	}
+	conditionArray.push(hold);
 	this.condtions =  {
-	noOfRows : allArrays[0][0],
-	noOfCols :  allArrays[0][2],
-	minNoOfIng : allArrays[0][4],
-	maxNoOfCells : allArrays[0][6],
-	minNoOfCells : 2*allArrays[0][4]
+	noOfRows : conditionArray[0],
+	noOfCols :  conditionArray[1],
+	minNoOfIng : conditionArray[2],
+	maxNoOfCells : conditionArray[3],
+	minNoOfCells : 2*conditionArray[2]
 	}
 	this.allArrays = allArrays.slice(1);
-	 
+	console.log("condition array" + conditionArray);
 	return this.allArrays ; 
 }
+function solveByRows(startRow ,startCol, noOfCells){ 
+	var noOfT = 0;
+	var noOfM = 0;
+	var start; 
+	var end; 
+	var currentNo = 0 ;
+	
 
-function solveByRows(arr,l,h){ 
-	var min = 2*l,
+	for ( index in this.allArrays[startRow]){
+		if (currentNo < noOfCells){
+			
+			if (this.allArrays[startRow][startCol + Number(index) ] == "T") noOfT++ ; 
+			if (this.allArrays[startRow][startCol + Number(index) ] == "M") noOfM++ ;
+			currentNo ++
+		} else break;
+	}
+	return {
+		noOfT ,
+		noOfM ,
+		endcol : startCol + Number(index)-1,
+		endRow : startRow
+	}	
+}
+
+function solveByRows2(arr,l,h){ 
+	var min = h,
 		max = h,
 	 	countT=0,
 	 	countM=0,
-	 	cell,
-	 	slicesArray=[],
+	 	slicesIndeces=[],
 	 	AllSlicesArray=[],
 	 	cellsUnused=[],
 	 	sliceIndex ="",
-	 	countMin=0,
-	 	holdSlice=[];
+	 	countMin=0;
 	 	//loop on array row by row
-	 	for (var i =0 ;i<arr.length;i++){
-		for(var j=0;j<arr[i].length;j++){
-			cell = arr[i][j];//define value of each cell
-			if (cell == 'T'){
-				//calculate number of T in a slice
-				countT++;
-			}
-			else {
-				//calculate number of M in a slice
-				countM++;
-			}	
-			sliceIndex +=j //index of cells in a single slice
-			countMin++; //to contol the minimum of number of cells
-
-			if (countMin >= min){
-				if (countT >= l && countM >= l){ //check minimum number of each ingredient
-				slicesArray.push(sliceIndex) ;
-				init();
-				}else{
-					cellsUnused.push(sliceIndex) ;
-					j --;//if slice is refused , take the last cell chosen again 
-					init();
+	 	for (var i in arr){
+			for(var j in arr[i]){
+				if (arr[i][j] == 'T'){
+					//calculate number of T in a slice
+					countT++;
 				}
+				else {
+					//calculate number of M in a slice
+					countM++;
+				}	
+				sliceIndex +=j //index of cells in a single slice
+				countMin++; //to contol the minimum of number of cells
+
+				if (countMin >= min){
+					//check minimum number of each ingredient
+					if (countT >= l && countM >= l){ 
+						slicesIndeces.push(sliceIndex) ; //push index of slice 
+						init();
+					}else{
+						cellsUnused.push(sliceIndex) ;
+						//j --;//if slice is refused , take the last cell chosen again 
+						init();
+					}
+				}	
 			}
+			if(countMin<min){
+				cellsUnused.push(sliceIndex);
+				init();
+			}
+			if (slicesIndeces.length >= 1) {
+				AllSlicesArray.push(slicesIndeces); //push slices of the whole row 
+				slicesIndeces=[];
+				init();
+			}
+					
 		}
-			AllSlicesArray.push(slicesArray);
-			holdSlice+=slicesArray;
-			slicesArray=[];
-			init();	
-	}
-	//console.log(holdSlice);
 	console.log("cells that is unused:"+cellsUnused);
 	console.log("slices:"+AllSlicesArray);
 
@@ -104,6 +141,8 @@ function solveByRows(arr,l,h){
 			countT=0;
 			countMin=0;
 	}
+	console.log("number of slices: "+AllSlicesArray.length)
+
 	//to calculate number of cells
 	var number_of_cells=0
 	for (var elem =0 ; elem<AllSlicesArray.length;elem++){
@@ -113,6 +152,6 @@ function solveByRows(arr,l,h){
 		}
 		
 	}
-console.log("numbers of cells:"+number_of_cells);
+	console.log("numbers of cells: "+number_of_cells);
 	
 }

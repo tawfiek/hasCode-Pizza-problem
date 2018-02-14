@@ -100,7 +100,7 @@ function solveByCols(startRow ,startCol, noOfCells) {
 	}
 }
 
-function solveByRowZigiagsolveByColZigiag (startRow ,startCol, noOfCells){
+function solveByColZigiag (startRow ,startCol, noOfCells){
 	var noOfT = 0;
 	var noOfM = 0;
 	var start; 
@@ -164,4 +164,15 @@ function solveByRowZigiag (startRow ,startCol, noOfCells){
 		endcol : startCol + (cells.length/2) -1, 
 		endRow : startRow + 1 
 	}
-}
+
+	function selectMethod(startRow,startCol,method,number_of_cells){
+		if(method == 1){
+			return solveByRows(startRow,startCol,number_of_cells);
+		}else if(method == 2){
+			return solveByCols(startRow,startCol,number_of_cells);
+		}else if(method ==3){
+			return solveByRowZigiag(startRow,startCol,number_of_cells);
+		}else{
+			return solveByColZigiag(startRow,startCol,number_of_cells);
+		}
+	}

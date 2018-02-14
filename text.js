@@ -33,6 +33,17 @@ function seprateString (text){
 			arr=[];
 		}
 	}
+	var conditionArray = [],
+		 hold = "";
+	for(var col =0;col<allArrays[0].length;col++){
+		if(allArrays[0][col] !== " " ){
+			hold += allArrays[0][col];
+		}else{
+
+			conditionArray.push(hold);
+			hold = "";
+		}
+	}
 	this.condtions =  {
 	noOfRows : allArrays[0][0],
 	noOfCols :  allArrays[0][2],

@@ -2,7 +2,12 @@
 /*eslint no-unused-vars: ["error", { "args": "none" }]*/
 /*global window , document,FileReader*/
 
+
+
 window.onload = function () {
+    this.takenSlices =[];
+    let pushDone  = false ;
+
     "use strict";
     var fileInput = document.getElementById('fileInput'),
         fileDisplayArea = document.getElementById('fileDisplayArea');
@@ -14,7 +19,7 @@ window.onload = function () {
 			fileDisplayArea.innerText = reader.result;
 			//seprate string in arrays 
 			seprateString(text);
-			console.log(solveByRowZigiag(0,0, 5));
+			theBrain();
         };
 		reader.readAsText(file);
 		
@@ -66,8 +71,8 @@ function solveByRows(startRow ,startCol, noOfCells){
 	for ( index in this.allArrays[startRow]){
 		if (currentNo < noOfCells){
 			
-			if (this.allArrays[startRow][startCol + Number(index) ] == "T") noOfT++ ; 
-			if (this.allArrays[startRow][startCol + Number(index) ] == "M") noOfM++ ;
+			if (this.allArrays[startRow][startCol + Number(index) ] === "T") noOfT++ ;
+			if (this.allArrays[startRow][startCol + Number(index) ] === "M") noOfM++ ;
 			currentNo ++
 		} else break;
 	}
@@ -87,8 +92,8 @@ function solveByCols(startRow ,startCol, noOfCells) {
 	var currentNo = 0 ;
 	for ( index in this.allArrays) {
 		if (currentNo < noOfCells){
-			if (this.allArrays[startRow + Number(index)][startCol] == "T") noOfT++ ;
-			if (this.allArrays[startRow + Number(index)][startCol] == "M") noOfM++ ;
+			if (this.allArrays[startRow + Number(index)][startCol] === "T") noOfT++ ;
+			if (this.allArrays[startRow + Number(index)][startCol] === "M") noOfM++ ;
 			currentNo ++
 		}else break;
 	}
@@ -122,8 +127,8 @@ function solveByColZigiag (startRow ,startCol, noOfCells){
 	}
 
 	for (let cell of cells ){ 
-		if (cell === 'T') noOfT++
-		if (cell === 'M') noOfM++
+		if (cell === 'T') noOfT++;
+		if (cell === 'M') noOfM++;
 	}
 	return {
 		noOfT ,
@@ -139,7 +144,7 @@ function solveByRowZigiag (startRow ,startCol, noOfCells){
 	var start; 
 	var end;
 	var currentNo = 0;
-	var cells = []
+	var cells = [];
 
 	for (index in this.allArrays){
 		if (currentNo < noOfCells){
@@ -155,27 +160,29 @@ function solveByRowZigiag (startRow ,startCol, noOfCells){
 	}
 
 	for (let cell of cells ){ 
-		if (cell === 'T') noOfT++
-		if (cell === 'M') noOfM++
+		if (cell === 'T') noOfT++;
+		if (cell === 'M') noOfM++;
 	}
 	return {
 		noOfT ,
 		noOfM ,
 		endcol : startCol + (cells.length/2) -1, 
 		endRow : startRow + 1 
-	}
+	};
 
-	function selectMethod(startRow,startCol,method,number_of_cells){
-		if(method == 1){
-			return solveByRows(startRow,startCol,number_of_cells);
-		}else if(method == 2){
-			return solveByCols(startRow,startCol,number_of_cells);
-		}else if(method ==3){
-			return solveByRowZigiag(startRow,startCol,number_of_cells);
-		}else{
-			return solveByColZigiag(startRow,startCol,number_of_cells);
-		}
-	}
+
+}
+
+function getSlice(startRow,startCol,methodId,number_of_cells){
+    if(methodId== 1){
+        return solveByRows(startRow,startCol,number_of_cells);
+    }else if(methodId== 2){
+        return solveByCols(startRow,startCol,number_of_cells);
+    }else if(methodId==3){
+        return solveByRowZigiag(startRow,startCol,number_of_cells);
+    }else{
+        return solveByColZigiag(startRow,startCol,number_of_cells);
+    }
 }
 
 function makeDecision() {
@@ -192,4 +199,50 @@ function makeDecision() {
 	}
 
 }
+
+function theBrain(startRow = 0 , startCol = 0) {
+	const rundm = makeDecision();
+
+	let slice = getSlice(startRow , startCol, rundm.methodId, rundm.noOfCells);
+
+	if (slice.noOfT >= this.condtions.minNoOfIng && slice.noOfM >= this.condtions.minNoOfIng)
+		pushSlice(rundm,slice,startRow,startCol);
+		else {
+		for (let index = rundm.noOfCells+1 ; index<=this.condtions.maxNoOfCells; index++){
+			slice = getSlice(startRow, startCol, rundm.methodId, index);
+			if(slice.noOfT >= this.condtions.minNoOfIng && slice.noOfM >= this.condtions.minNoOfIng){
+                pushSlice(rundm,slice,startRow,startCol);
+                this.pushDone = true;
+                break;
+            }
+		}
+		if (!this.pushDone) {
+			theBrain(startRow, startCol);
+		}
+	}
+}
+
+function pushSlice(rundm,slice,startRow,startCol ) {
+    this.takenSlices.push({
+        startRow  :startRow ,
+        startCol : startCol,
+        endRow : slice.endRow,
+        endCol : slice.endCol
+    });
+
+
+
+    switch (rundm.methodId){
+        case 1 : theBrain(slice.endRow, slice.endCol +1);
+            break;
+        case  2 : theBrain(slice.endRow+1, slice.endCol);
+            break;
+        case 3 : theBrain(startRow, slice.endCol +1);
+            break;
+        case 4 : theBrain(slice.endRow +1, startCol);
+    }
+}
+
+
+
 

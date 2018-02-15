@@ -165,3 +165,19 @@ function solveByRowZigiag (startRow ,startCol, noOfCells){
 		endRow : startRow + 1 
 	}
 }
+
+function makeDecision() {
+	const min = this.condtions.minNoOfCells;
+	const max = this.condtions.maxNoOfCells;
+
+	const rndmNoOfCells = Math.random()*(max - min) + min ;
+	
+	const rundmId = Math.random() * 4 + 1;
+
+	return { 
+		noOfCells : Math.floor(rndmNoOfCells),
+		methodId: Math.floor(rundmId)
+	}
+
+}
+

@@ -100,7 +100,7 @@ function solveByCols(startRow ,startCol, noOfCells) {
 	}
 }
 
-function solveByRowZigiagsolveByColZigiag (startRow ,startCol, noOfCells){
+function solveByColZigiag (startRow ,startCol, noOfCells){
 	var noOfT = 0;
 	var noOfM = 0;
 	var start; 
@@ -164,6 +164,18 @@ function solveByRowZigiag (startRow ,startCol, noOfCells){
 		endcol : startCol + (cells.length/2) -1, 
 		endRow : startRow + 1 
 	}
+
+	function selectMethod(startRow,startCol,method,number_of_cells){
+		if(method == 1){
+			return solveByRows(startRow,startCol,number_of_cells);
+		}else if(method == 2){
+			return solveByCols(startRow,startCol,number_of_cells);
+		}else if(method ==3){
+			return solveByRowZigiag(startRow,startCol,number_of_cells);
+		}else{
+			return solveByColZigiag(startRow,startCol,number_of_cells);
+		}
+	}
 }
 
 function makeDecision() {
@@ -171,10 +183,10 @@ function makeDecision() {
 	const max = this.condtions.maxNoOfCells;
 
 	const rndmNoOfCells = Math.random()*(max - min) + min ;
-	
+
 	const rundmId = Math.random() * 4 + 1;
 
-	return { 
+	return {
 		noOfCells : Math.floor(rndmNoOfCells),
 		methodId: Math.floor(rundmId)
 	}

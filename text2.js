@@ -1,7 +1,11 @@
-/*eslint no-unused-vars: "error"*/
-/*eslint no-unused-vars: ["error", { "args": "none" }]*/
-/*global window , document,FileReader*/
-
+var countT=0,
+ 	countM=0,
+ 	slicesIndeces=[],
+ 	AllSlicesArray=[],
+ 	cellsUnused=[],
+ 	AllCellsUnused=[],
+ 	sliceIndex ="",
+ 	countMin=0;
 window.onload = function () {
     "use strict";
     var fileInput = document.getElementById('fileInput'),
@@ -16,17 +20,15 @@ window.onload = function () {
 			seprateString(reader.result);
 			console.log(window.allArrays);
 			console.log(window.condtions);
-			solveByRows2(window.allArrays,window.condtions.minNoOfIng,window.condtions.maxNoOfCells);
+				solveByRows2(window.allArrays,window.condtions.minNoOfIng,window.condtions.minNoOfCells );
 
-			
-			
         };
 		reader.readAsText(file);
 		
 	});
     
 };
-
+//seperate string 
 function seprateString (text){
 	let allArrays = []
 	let  arr = [];
@@ -44,6 +46,7 @@ function seprateString (text){
 		if(allArrays[0][col] !== " " ){
 			hold += allArrays[0][col];
 		}else{
+
 			conditionArray.push(hold);
 			hold = "";
 		}
@@ -60,6 +63,7 @@ function seprateString (text){
 	console.log("condition array" + conditionArray);
 	return this.allArrays ; 
 }
+
 function solveByRows(startRow ,startCol, noOfCells){ 
 	var noOfT = 0;
 	var noOfM = 0;
@@ -84,29 +88,15 @@ function solveByRows(startRow ,startCol, noOfCells){
 	}	
 }
 
-function solveByRows2(arr,l,h){ 
-	var min = h,
-		max = h,
-	 	countT=0,
-	 	countM=0,
-	 	slicesIndeces=[],
-	 	AllSlicesArray=[],
-	 	cellsUnused=[],
-	 	sliceIndex ="",
-	 	countMin=0;
+function solveByRows2(arr,l,min){
 	 	//loop on array row by row
 	 	for (var i in arr){
 			for(var j in arr[i]){
-				if (arr[i][j] == 'T'){
-					//calculate number of T in a slice
-					countT++;
-				}
-				else {
-					//calculate number of M in a slice
-					countM++;
-				}	
-				sliceIndex +=j //index of cells in a single slice
-				countMin++; //to contol the minimum of number of cells
+				if (arr[i][j] == 'T'){countT++;}
+				else {countM++;}	
+
+				sliceIndex +=j 
+				countMin++;
 
 				if (countMin >= min){
 					//check minimum number of each ingredient
@@ -114,14 +104,18 @@ function solveByRows2(arr,l,h){
 						slicesIndeces.push(sliceIndex) ; //push index of slice 
 						init();
 					}else{
-						cellsUnused.push(sliceIndex) ;
-						//j --;//if slice is refused , take the last cell chosen again 
+						cellsUnused.push(sliceIndex); 
 						init();
 					}
 				}	
 			}
 			if(countMin<min){
 				cellsUnused.push(sliceIndex);
+				init();
+			}
+			if (cellsUnused.length >= 1) {
+				AllCellsUnused.push(cellsUnused); //push slices of the whole row 
+				cellsUnused=[];
 				init();
 			}
 			if (slicesIndeces.length >= 1) {
@@ -131,27 +125,59 @@ function solveByRows2(arr,l,h){
 			}
 					
 		}
-	console.log("cells that is unused:"+cellsUnused);
-	console.log("slices:"+AllSlicesArray);
-
-	//initialize variable 
-	function init(){
-		sliceIndex="";
-			countM=0;
-			countT=0;
-			countMin=0;
-	}
-	console.log("number of slices: "+AllSlicesArray.length)
-
-	//to calculate number of cells
-	var number_of_cells=0
-	for (var elem =0 ; elem<AllSlicesArray.length;elem++){
-		for (var i = 0; i < AllSlicesArray[elem].length; i++) {
-			
-			number_of_cells+=AllSlicesArray[elem][i].length;
+		for (element in AllCellsUnused){
+			console.log("cells that is unused at row "+element+" is:"+AllCellsUnused[element]);
 		}
 		
-	}
-	console.log("numbers of cells: "+number_of_cells);
-	
+		console.log("number of cells is unused: "+countCellsUnused());
+
+		for (element in AllCellsUnused){
+			console.log("cells that is used at row "+element+" is:"+AllSlicesArray[element]);
+		}
+		//console.log("slices:"+AllSlicesArray);
+		console.log("number of slices: "+countSlices());
+		console.log("numbers of cells: "+countCells());
+		
+} 
+//initialize variable 
+function init(){
+	sliceIndex="";
+		countM=0;
+		countT=0;
+		countMin=0;
+}
+
+function countSlices(){
+	var number_of_slices=0
+		for (var elem =0 ; elem<window.AllSlicesArray.length;elem++){
+			number_of_slices += window.AllSlicesArray[elem].length;
+			
+		}
+	return number_of_slices;
+}
+
+function countCells(){
+	var number_of_cells=0
+		for (var elem =0 ; elem<window.AllSlicesArray.length;elem++){
+			for (var i = 0; i < window.AllSlicesArray[elem].length; i++) {
+				
+				number_of_cells+=window.AllSlicesArray[elem][i].length;
+			}
+			
+		}
+		return number_of_cells;
+
+}
+
+function countCellsUnused(){
+	var number_of_cells=0
+		for (var elem =0 ; elem<window.AllCellsUnused.length;elem++){
+			for (var i = 0; i < window.AllCellsUnused[elem].length; i++) {
+				
+				number_of_cells+=window.AllCellsUnused[elem][i].length;
+			}
+			
+		}
+		return number_of_cells;
+
 }

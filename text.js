@@ -63,8 +63,6 @@ function seprateString (text){
 function solveByRows(startRow ,startCol, noOfCells){ 
 	var noOfT = 0;
 	var noOfM = 0;
-	var start; 
-	var end; 
 	var currentNo = 0 ;
 	
 
@@ -108,8 +106,6 @@ function solveByCols(startRow ,startCol, noOfCells) {
 function solveByColZigiag (startRow ,startCol, noOfCells){
 	var noOfT = 0;
 	var noOfM = 0;
-	var start; 
-	var end;
 	var currentNo = 0;
 	var cells = []
 
@@ -141,8 +137,6 @@ function solveByColZigiag (startRow ,startCol, noOfCells){
 function solveByRowZigiag (startRow ,startCol, noOfCells){
 	var noOfT = 0;
 	var noOfM = 0;
-	var start; 
-	var end;
 	var currentNo = 0;
 	var cells = [];
 
@@ -174,11 +168,11 @@ function solveByRowZigiag (startRow ,startCol, noOfCells){
 }
 
 function getSlice(startRow,startCol,methodId,number_of_cells){
-    if(methodId== 1){
-        return solveByRows(startRow,startCol,number_of_cells);
-    }else if(methodId== 2){
+    if(methodId=== 1){
+        return solgveByRows(startRow,startCol,number_of_cells);
+    }else if(methodId=== 2){
         return solveByCols(startRow,startCol,number_of_cells);
-    }else if(methodId==3){
+    }else if(methodId===3){
         return solveByRowZigiag(startRow,startCol,number_of_cells);
     }else{
         return solveByColZigiag(startRow,startCol,number_of_cells);
@@ -229,8 +223,6 @@ function pushSlice(rundm,slice,startRow,startCol ) {
         endRow : slice.endRow,
         endCol : slice.endCol
     });
-
-
 
     switch (rundm.methodId){
         case 1 : theBrain(slice.endRow, slice.endCol +1);

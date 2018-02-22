@@ -20,7 +20,7 @@ window.onload = function () {
 			seprateString(reader.result);
 			console.log(window.allArrays);
 			console.log(window.condtions);
-				solveByRows2(window.allArrays,window.condtions.minNoOfIng,window.condtions.minNoOfCells );
+				solveByRows2(window.allArrays,window.condtions.minNoOfIng,window.condtions.maxNoOfCells );
 
         };
 		reader.readAsText(file);

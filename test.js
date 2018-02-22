@@ -268,4 +268,20 @@ function pushSlice(rundm,slice,startRow,startCol ) {
  }
 
 
+function probabilties(let num){
+	let probability = [];
+	if(!num%3){
+		const y = num /3 ;
+		probability.push({y,3});
+		probability.push({3,y});
+	}
+	if(!num%2){
+		const y = num /2 ;
+		probability.push({y,2});
+		probability.push({2,y});
+	}
+	probability.push({num,1});
+	probability.push({1,num});
+	return probability;
 
+}

@@ -155,7 +155,7 @@ function solveByRowZigiag (startRow ,startCol, noOfCells){
 			currentNo += 2;
 		}else break;
 	}
-	
+
 	if (cells.length > noOfCells) {
 		cells.pop();
 		cells.pop();
@@ -177,7 +177,81 @@ function solveByRowZigiag (startRow ,startCol, noOfCells){
 		
 	};
 
+	function solveByThreeRows(startRow ,startCol, noOfCells){
+        let noOfT = 0;
+        let noOfM = 0;
+        let currentNo = 0;
+        let cells = [];
 
+        for (index in this.allArrays){
+            if (currentNo < noOfCells){
+
+                cells.push(this.allArrays[startRow][ Number(index) + startCol]);
+                cells.push(this.allArrays[  startRow + 1 ][ Number(index) +startCol ]);
+                cells.push(this.allArrays[  startRow + 2 ][ Number(index) +startCol ]);
+                currentNo +=3 ;
+            }else break;
+        }
+
+
+        if (cells.length > noOfCells) {
+            cells.pop();
+            cells.pop();
+            cells.pop();
+        }
+
+        for (let cell of cells ){
+            if (cell === 'T') noOfT++;
+            if (cell === 'M') noOfM++;
+        }
+        return {
+            noOfT ,
+            noOfM ,
+            startRow:startRow,
+            startCol:startCol,
+            endRow : startRow + 2 ,
+            endcol : startCol + (cells.length/3) -1
+        }
+
+    }
+
+
+}
+
+function solveThreeCol (startRow ,startCol, noOfCells) {
+    let noOfT = 0;
+    let noOfM = 0;
+    let currentNo = 0;
+    let cells = [];
+
+    for (index in this.allArrays){
+        if (currentNo < noOfCells){
+            cells.push(this.allArrays[ Number(index) + startRow ][startCol]);
+            cells.push(this.allArrays[ Number(index) + startRow ][ startCol + 1 ]);
+            cells.push(this.allArrays[ Number(index) + startRow ][ startCol + 2 ]);
+            currentNo += 3;
+        }else break;
+    }
+
+    if (cells.length > noOfCells) {
+        cells.pop();
+        cells.pop();
+        cells.pop();
+    }
+
+    for (let cell of cells ){
+        if (cell === 'T') noOfT++;
+        if (cell === 'M') noOfM++;
+    }
+    return {
+        noOfT ,
+        noOfM ,
+        startRow:startRow,
+        startCol:startCol,
+        endRow : startRow + (cells.length/3) -1,
+        endcol : startCol+2
+
+    }
 }
 
 function getSlice(startRow,startCol,methodId,number_of_cells){
@@ -261,20 +335,16 @@ function pushSlice(rundm,slice,startRow,startCol ) {
  }
 
 
-function probabilties(let num){
+function probabilties( num){
 	let probability = [];
 	if(!num%3){
 		const y = num /3 ;
-		probability.push({y,3});
-		probability.push({3,y});
+		probability.push({num: y,factor: 3});
 	}
 	if(!num%2){
 		const y = num /2 ;
-		probability.push({y,2});
-		probability.push({2,y});
+		probability.push({num : y, factor : 2});
 	}
-	probability.push({num,1});
-	probability.push({1,num});
+	probability.push({num : num, factor : 1});
 	return probability;
-
 }

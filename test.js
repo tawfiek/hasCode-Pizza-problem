@@ -2,19 +2,20 @@
 /*eslint no-unused-vars: ["error", { "args": "none" }]*/
 /*global window , document,FileReader*/
 
-var flag = 0;
+let flag = 0;
 
 window.onload = function () {
     this.takenSlices =[];
     let pushDone  = false ;
 
     "use strict";
-    var fileInput = document.getElementById('fileInput'),
+    const fileInput = document.getElementById('fileInput'),
         fileDisplayArea = document.getElementById('fileDisplayArea');
-    	fileInput.addEventListener('change', function (e) {
-        var file = fileInput.files[0],
-            reader = new FileReader();
-		reader.onload = function (e) {
+    fileInput.addEventListener('change', function (e) {
+            let file = fileInput.files[0],
+                reader = new FileReader();
+
+            reader.onload = function (e) {
 			let text = reader.result;
 			fileDisplayArea.innerText = reader.result;
 			//seprate string in arrays 
@@ -38,9 +39,9 @@ function seprateString (text){
 			arr=[];
 		}
 	}
-	var conditionArray = [],
-		 hold = "";
-	for(var col =0;col<allArrays[0].length;col++){
+    let conditionArray = [],
+        hold = "";
+    for(let col =0; col<allArrays[0].length; col++){
 		if(allArrays[0][col] !== " " ){
 			hold += allArrays[0][col];
 		}else{
@@ -55,20 +56,18 @@ function seprateString (text){
 	minNoOfIng : allArrays[0][4],
 	maxNoOfCells : allArrays[0][6],
 	minNoOfCells : 2*allArrays[0][4]
-	}
+	};
 	this.allArrays = allArrays.slice(1);
 	return this.allArrays ; 
 }
 
-function solveByRows(startRow ,startCol, noOfCells){ 
-	var noOfT = 0;
-	var noOfM = 0;
-	var start; 
-	var end; 
-	var currentNo = 0 ;
-	
+function solveByRows(startRow ,startCol, noOfCells){
+    let noOfT = 0;
+    let noOfM = 0;
+    let currentNo = 0;
 
-	for ( index in this.allArrays[startRow]){
+
+    for ( index in this.allArrays[startRow]){
 		if (currentNo < noOfCells){
 			
 			if (this.allArrays[startRow][startCol + Number(index) ] === "T") noOfT++ ;
@@ -88,12 +87,9 @@ function solveByRows(startRow ,startCol, noOfCells){
 }
 
 function solveByCols(startRow ,startCol, noOfCells) {
-	var noOfT = 0;
-	var noOfM = 0;
-	var start; 
-	var end; 
-	var currentNo = 0 ;
-	for ( index in this.allArrays) {
+    let noOfT = 0;
+    let noOfM = 0;
+    for ( index in this.allArrays) {
 		if (currentNo < noOfCells){
 			if (this.allArrays[startRow + Number(index)][startCol] === "T") noOfT++ ;
 			if (this.allArrays[startRow + Number(index)][startCol] === "M") noOfM++ ;
@@ -114,15 +110,13 @@ function solveByCols(startRow ,startCol, noOfCells) {
 function solveByColZigiag (startRow ,startCol, noOfCells){
 	var noOfT = 0;
 	var noOfM = 0;
-	var start; 
-	var end;
 	var currentNo = 0;
-	var cells = []
+	var cells = [];
 
 	for (index in this.allArrays){
 		if (currentNo < noOfCells){
 			cells.push(this.allArrays[ Number(index) + startRow ][startCol]);
-			cells.push(this.allArrays[ Number(index) + startRow ][ startCol + 1 ]);
+            cells.push(this.allArrays[ Number(index) + startRow ][ startCol + 1 ]);
 			currentNo += 2;
 		}else break;
 	}
@@ -148,14 +142,12 @@ function solveByColZigiag (startRow ,startCol, noOfCells){
 }
 
 function solveByRowZigiag (startRow ,startCol, noOfCells){
-	var noOfT = 0;
-	var noOfM = 0;
-	var start; 
-	var end;
-	var currentNo = 0;
-	var cells = [];
+    let noOfT = 0;
+    let noOfM = 0;
+    let currentNo = 0;
+    let cells = [];
 
-	for (index in this.allArrays){
+    for (index in this.allArrays){
 		if (currentNo < noOfCells){
 
 			cells.push(this.allArrays[startRow][ Number(index) + startCol]);
@@ -189,11 +181,11 @@ function solveByRowZigiag (startRow ,startCol, noOfCells){
 }
 
 function getSlice(startRow,startCol,methodId,number_of_cells){
-    if(methodId== 1){
+    if(methodId=== 1){
         return solveByRows(startRow,startCol,number_of_cells);
-    }else if(methodId== 2){
+    }else if(methodId=== 2){
         return solveByCols(startRow,startCol,number_of_cells);
-    }else if(methodId==3){
+    }else if(methodId===3){
         return solveByRowZigiag(startRow,startCol,number_of_cells);
     }else{
         return solveByColZigiag(startRow,startCol,number_of_cells);
@@ -216,7 +208,7 @@ function makeDecision() {
 
 }
 
-function theBrain(startRow = 0 , startCol = 0) {
+function theBrain(startRow = 0, startCol = 0) {
 	const rundm = makeDecision();
 	let slice = getSlice(startRow , startCol, rundm.methodId, rundm.noOfCells);
 
@@ -246,6 +238,7 @@ function theBrain(startRow = 0 , startCol = 0) {
 }
 
 function pushSlice(rundm,slice,startRow,startCol ) {
+
     this.takenSlices.push({
         startRow  : startRow ,
         startCol : startCol,

@@ -17,6 +17,7 @@ window.onload = function () {
 
             let allMatches = getAllMatchSlices();
             console.log(allMatches);
+            Find_Common();
         };
         reader.readAsText(file);
 
@@ -115,4 +116,29 @@ function getAllMatchSlices () {
        }
    }
    return allMatches ;
+}
+
+// *********************************** Find The Common Cells *********************************************************
+
+function Find_Common(){
+	let possibleSlices = []
+	possibleSlices = getAllMatchSlices();
+	for (let item = possibleSlices.length-1 ; item > 0 ; item--){
+		let sR = possibleSlices[item].startRow; //get start row of current cell
+		let sC = possibleSlices[item].startCol; //get start col of current cell
+		let eR = possibleSlices[item-1].endRow; //get end row of the previous cell
+		let eC = possibleSlices[item-1].endCol; //get end col of the previous cell
+		let no_of_common = 0;
+
+		let rdiff = eR - sR +1 ; // get difference bw end row and start row
+		let cdiff = eC - sC +1 ; // get difference bw end col and start col
+		if (rdiff >= 0 && cdiff >=0) {
+			 no_of_common = rdiff * cdiff;
+			possibleSlices[item].commonCells += no_of_common;
+		}
+		
+
+	}
+		console.log(possibleSlices);
+	
 }

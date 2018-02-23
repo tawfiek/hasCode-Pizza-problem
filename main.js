@@ -88,14 +88,15 @@ function probabilities(min, max) {
 
 function getAllMatchSlices () {
     let allMatches =[];
-   for(let i =0 ; i<this.allArrays.length;i++){
+   for(let i =0 ; i < this.allArrays.length ;i++){
        for(let j=0 ; j < this.allArrays[i].length;j++){
            for (let prob of this.condtions.probabilities){
                let noOfT = 0;
                let noOfM = 0 ;
-               for (let rowNo= i ; rowNo < prob.num ; rowNo ++ ) {
-                  for (let colNo= j ; colNo < prob.factor ; colNo++ ) {
-                      if ( rowNo <  this.condtions.noOfRows-1 && colNo < this.condtions.noOfCols-1){
+               for (let rowNo= i ; rowNo < i+prob.num ; rowNo ++ ) {
+                  for (let colNo= j ; colNo < j+prob.factor ; colNo++ ) {
+
+                      if ( i+prob.num <= this.condtions.noOfRows && j+prob.factor <=this.condtions.noOfCols){
                           if (this.allArrays[rowNo][colNo] === 'T') noOfT++;
                           if (this.allArrays[rowNo][colNo] === 'M') noOfM++;
                       }
@@ -105,14 +106,13 @@ function getAllMatchSlices () {
                    allMatches.push({
                        startRow : i ,
                        startCol : j ,
-                       endRow : i+prob.num ,
-                       endCol : j+prob.factor,
+                       endRow : i+prob.num-1 ,
+                       endCol : j+prob.factor-1,
                        commonCells : 0
                    });
                }
            }
        }
    }
-
    return allMatches ;
 }

@@ -6,18 +6,18 @@ window.onload = function () {
     const fileInput = document.getElementById('fileInput'),
         fileDisplayArea = document.getElementById('fileDisplayArea');
     fileInput.addEventListener('change', function (e) {
+      	document.getElementsByClassName('mul5')[0].style.display='inline';
+    	
         let file = fileInput.files[0],
             reader = new FileReader();
 
         reader.onload = function (e) {
             let text = reader.result;
-            //fileDisplayArea.innerText = reader.result;
-            //seprate string in arrays
+            //fileDisplayArea.innerText = reader.result;            
             seprateString(text);
 
             let allMatches = getAllMatchSlices();
             console.log(allMatches);
-            // sliceSlices();
             calCells();
         };
         reader.readAsText(file);
@@ -210,12 +210,14 @@ function sliceSlices () {
     console.timeEnd('Ahmed&Eman');
     let element = document.getElementById("fileDisplayArea");
 
-    element.innerHTML=takenSlice.length+"<br/>";
-
+    element.innerHTML = takenSlice.length+"<br/>";
+    let t ="";
     for(var i=0; i <takenSlice.length;i++){
-    	let t =takenSlice[i].startRow+" "+takenSlice[i].startCol+" "+takenSlice[i].endRow+" "+takenSlice[i].endCol+"<br />";
-    	element.innerHTML += t ;
+    	 t += takenSlice[i].startRow+" "+takenSlice[i].startCol+" "+takenSlice[i].endRow+" "+takenSlice[i].endCol+"<br />";
+    	
     }
+    element.innerHTML += t ;
+
 
     return takenSlice;
 

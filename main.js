@@ -11,7 +11,7 @@ window.onload = function () {
 
         reader.onload = function (e) {
             let text = reader.result;
-            fileDisplayArea.innerText = reader.result;
+            //fileDisplayArea.innerText = reader.result;
             //seprate string in arrays
             seprateString(text);
 
@@ -208,7 +208,16 @@ function sliceSlices () {
 
     console.log(takenSlice);
     console.timeEnd('Ahmed&Eman');
-    return margeTaken(takenSlice);
+    let element = document.getElementById("fileDisplayArea");
+
+    element.innerHTML=takenSlice.length+"<br/>";
+
+    for(var i=0; i <takenSlice.length;i++){
+    	let t =takenSlice[i].startRow+" "+takenSlice[i].startCol+" "+takenSlice[i].endRow+" "+takenSlice[i].endCol+"<br />";
+    	element.innerHTML += t ;
+    }
+
+    return takenSlice;
 
 }
  function calCells(){
@@ -223,80 +232,81 @@ function sliceSlices () {
 
  }
 
- function margeTaken (taken) {
 
-     for (let slice of taken) {
-         if (slice.noOfCells < this.condtions.maxNoOfCells) {
-             for (let sc= slice.startCol-1 ; sc >= 0 ; sc--){
-                 const noOfAddCells =  1 + slice.endRow - slice.startRow;
-                 if ((slice.noOfCells + noOfAddCells) <= this.condtions.maxNoOfCells) {
-                     let cellCheck = false;
-                     for (let i=0 ; i < noOfAddCells ; i++){
-                         if (this.allArrays[i+slice.startRow][sc]) {
-                             this.allArrays[i+slice.startRow][sc]= 0;
-                             cellCheck = true ;
-                         }else cellCheck = false ;
-                     }
-                    if(cellCheck){
-                        slice.startCol = sc ;
-                        slice.noOfCells += noOfAddCells ;
-                    }
-                 }
-             }
-             for (let sr= slice.startRow ; sr >= 0 ; sr--){
-                 const noOfAddCells =  1 + slice.endcol - slice.startCol;
-                 if ((slice.noOfCells + noOfAddCells) <= this.condtions.maxNoOfCells) {
-                     let cellCheck = false;
-                     for (let i=0 ; i < noOfAddCells ; i++){
-                         if (this.allArrays[sr][i+slice.startCol]) {
-                             this.allArrays[sr][i+slice.startCol]= 0;
-                             cellCheck = true ;
-                         }else cellCheck = false ;
-                     }
-                     if(cellCheck){
-                         slice.startRow = sr ;
-                         slice.noOfCells +=noOfAddCells;
-                     }
+ // function margeTaken (taken) {
 
-                 }
-             }
-             for (let ec= slice.endcol ; ec < this.allArrays[0].length ; ec++){
-                 const noOfAddCells =  1 + slice.endRow - slice.startRow;
+ //     for (let slice of taken) {
+ //         if (slice.noOfCells < this.condtions.maxNoOfCells) {
+ //             for (let sc= slice.startCol-1 ; sc >= 0 ; sc--){
+ //                 const noOfAddCells =  1 + slice.endRow - slice.startRow;
+ //                 if ((slice.noOfCells + noOfAddCells) <= this.condtions.maxNoOfCells) {
+ //                     let cellCheck = false;
+ //                     for (let i=0 ; i < noOfAddCells ; i++){
+ //                         if (this.allArrays[i+slice.startRow][sc]) {
+ //                             this.allArrays[i+slice.startRow][sc]= 0;
+ //                             cellCheck = true ;
+ //                         }else cellCheck = false ;
+ //                     }
+ //                    if(cellCheck){
+ //                        slice.startCol = sc ;
+ //                        slice.noOfCells += noOfAddCells ;
+ //                    }
+ //                 }
+ //             }
+ //             for (let sr= slice.startRow ; sr >= 0 ; sr--){
+ //                 const noOfAddCells =  1 + slice.endcol - slice.startCol;
+ //                 if ((slice.noOfCells + noOfAddCells) <= this.condtions.maxNoOfCells) {
+ //                     let cellCheck = false;
+ //                     for (let i=0 ; i < noOfAddCells ; i++){
+ //                         if (this.allArrays[sr][i+slice.startCol]) {
+ //                             this.allArrays[sr][i+slice.startCol]= 0;
+ //                             cellCheck = true ;
+ //                         }else cellCheck = false ;
+ //                     }
+ //                     if(cellCheck){
+ //                         slice.startRow = sr ;
+ //                         slice.noOfCells +=noOfAddCells;
+ //                     }
 
-                 if ((slice.noOfCells + noOfAddCells) <= this.condtions.maxNoOfCells) {
-                     let cellCheck = false;
-                     for (let i=0 ; i < noOfAddCells ; i++){
-                         if (this.allArrays[i+slice.startRow][ec]) {
-                             this.allArrays[i+slice.startRow][ec] =0;
-                             cellCheck = true ;
-                         }else cellCheck = false ;
-                     }
-                     if(cellCheck){
-                         slice.endcol = ec ;
-                         slice.noOfCells += noOfAddCells;
-                     }
+ //                 }
+ //             }
+ //             for (let ec= slice.endcol ; ec < this.allArrays[0].length ; ec++){
+ //                 const noOfAddCells =  1 + slice.endRow - slice.startRow;
 
-                 }
-             }
-             for (let er= slice.endRow ; er < this.allArrays.length ; er++){
-                 const noOfAddCells =  1 + slice.endcol - slice.startCol;
-                 if ((slice.noOfCells + noOfAddCells) <= this.condtions.maxNoOfCells) {
-                     let cellCheck = false;
-                     for (let i=0 ; i < noOfAddCells ; i++){
-                         if (this.allArrays[er][i+slice.startCol]) {
-                             this.allArrays[er][i+slice.startCol] = 0;
-                             cellCheck = true ;
-                         }else cellCheck = false ;
-                     }
-                     if(cellCheck){
-                         slice.endRow = er ;
-                         slice.noOfCells +=  noOfAddCells;
-                     }
-                     }
+ //                 if ((slice.noOfCells + noOfAddCells) <= this.condtions.maxNoOfCells) {
+ //                     let cellCheck = false;
+ //                     for (let i=0 ; i < noOfAddCells ; i++){
+ //                         if (this.allArrays[i+slice.startRow][ec]) {
+ //                             this.allArrays[i+slice.startRow][ec] =0;
+ //                             cellCheck = true ;
+ //                         }else cellCheck = false ;
+ //                     }
+ //                     if(cellCheck){
+ //                         slice.endcol = ec ;
+ //                         slice.noOfCells += noOfAddCells;
+ //                     }
 
-             }
-         }
-     }
-     console.log(taken);
-     return taken ;
-     }
+ //                 }
+ //             }
+ //             for (let er= slice.endRow ; er < this.allArrays.length ; er++){
+ //                 const noOfAddCells =  1 + slice.endcol - slice.startCol;
+ //                 if ((slice.noOfCells + noOfAddCells) <= this.condtions.maxNoOfCells) {
+ //                     let cellCheck = false;
+ //                     for (let i=0 ; i < noOfAddCells ; i++){
+ //                         if (this.allArrays[er][i+slice.startCol]) {
+ //                             this.allArrays[er][i+slice.startCol] = 0;
+ //                             cellCheck = true ;
+ //                         }else cellCheck = false ;
+ //                     }
+ //                     if(cellCheck){
+ //                         slice.endRow = er ;
+ //                         slice.noOfCells +=  noOfAddCells;
+ //                     }
+ //                     }
+
+ //             }
+ //         }
+ //     }
+ //     console.log(taken);
+ //     return taken ;
+ //     }

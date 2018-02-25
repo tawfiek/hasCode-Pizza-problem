@@ -17,7 +17,8 @@ window.onload = function () {
 
             let allMatches = getAllMatchSlices();
             console.log(allMatches);
-            Find_Common();
+            // sliceSlices();
+            calCells();
         };
         reader.readAsText(file);
 
@@ -97,7 +98,7 @@ function getAllMatchSlices () {
                for (let rowNo= i ; rowNo < i+prob.num ; rowNo ++ ) {
                   for (let colNo= j ; colNo < j+prob.factor ; colNo++ ) {
 
-                      if ( i+prob.num <= this.condtions.noOfRows && j+prob.factor <=this.condtions.noOfCols){
+                      if ( i+prob.num <= this.condtions.noOfRows && j+prob.factor <= this.condtions.noOfCols ){
                           if (this.allArrays[rowNo][colNo] === 'T') noOfT++;
                           if (this.allArrays[rowNo][colNo] === 'M') noOfM++;
                       }
@@ -109,7 +110,8 @@ function getAllMatchSlices () {
                        startCol : j ,
                        endRow : i+prob.num-1 ,
                        endCol : j+prob.factor-1,
-                       commonCells : 0
+                       commonCells : 0,
+                       noOfCells: noOfM+noOfT
                    });
                }
            }
@@ -121,24 +123,180 @@ function getAllMatchSlices () {
 // *********************************** Find The Common Cells *********************************************************
 
 function Find_Common(){
-	let possibleSlices = []
-	possibleSlices = getAllMatchSlices();
-	for (let item = possibleSlices.length-1 ; item > 0 ; item--){
-		let sR = possibleSlices[item].startRow; //get start row of current cell
-		let sC = possibleSlices[item].startCol; //get start col of current cell
-		let eR = possibleSlices[item-1].endRow; //get end row of the previous cell
-		let eC = possibleSlices[item-1].endCol; //get end col of the previous cell
-		let no_of_common = 0;
+	let possibleSlices = getAllMatchSlices();
 
-		let rdiff = eR - sR +1 ; // get difference bw end row and start row
-		let cdiff = eC - sC +1 ; // get difference bw end col and start col
-		if (rdiff >= 0 && cdiff >=0) {
-			 no_of_common = rdiff * cdiff;
-			possibleSlices[item].commonCells += no_of_common;
-		}
-		
+	for (const index in possibleSlices ) {
+        for (let i = Number(index) +1 ;  i < Number(index) + Math.pow(this.condtions.maxNoOfCells-1, 2) ; i++){
+            let commanRows ;
+            let commanCol ;
+            if (i >= possibleSlices.length ) {
+                break;
+            }
+           let currntSlice = possibleSlices[index];
+           let nextSlice = possibleSlices[i];
+           // ***************  For Rows ******************************
+           if (currntSlice.endRow > nextSlice.endRow){
+                commanRows = nextSlice.endRow - currntSlice.startRow +1 ;
+           } else if (currntSlice.endRow < nextSlice.endRow) {
+                commanRows = currntSlice.endRow - nextSlice.startRow +1 ;
+           }else if (currntSlice.endRow = nextSlice.endRow){
+               if (currntSlice.startRow > nextSlice.startRow ) {
+                   commanRows = nextSlice.endRow - currntSlice.startRow + 1 ;
+               } else {
+                   commanRows = currntSlice.endRow - nextSlice.startRow + 1 ;
+               }
+           }
+        //    ***************************************************************
+        //     ************* For Coll ***********************************
 
+            if (currntSlice.endCol > nextSlice.endCol){
+                commanCol = nextSlice.endCol - currntSlice.startCol +1 ;
+            } else if (currntSlice.endCol < nextSlice.endCol) {
+                commanCol = currntSlice.endCol - nextSlice.startCol +1 ;
+            }else if (currntSlice.endCol = nextSlice.endCol){
+                if (currntSlice.startCol > nextSlice.startCol ) {
+                    commanCol = nextSlice.endCol - currntSlice.startCol + 1 ;
+                } else {
+                    commanCol = currntSlice.endCol - nextSlice.startCol + 1 ;
+                }
+            }
+            if (commanRows > 0  && commanCol > 0  ) {
+               possibleSlices[index].commonCells  += commanCol*commanRows;
+               possibleSlices[i].commonCells += commanRows*commanCol;
+            }
+        }
 	}
-		console.log(possibleSlices);
-	
+		console.log(possibleSlices.sort(function (a,b) {
+            const n = a.commonCells - b.commonCells;
+            if (n !==0 ) return n ;
+            return b.noOfCells - a.noOfCells
+        }));
+
+	    return possibleSlices.sort(function (a,b) {
+             const n = b.noOfCells - a.noOfCells;
+             if (n !==0 ) return n ;
+             return a.commonCells - b.commonCells;
+        });
+
 }
+
+function sliceSlices () {
+    console.time("Ahmed&Eman")
+    const  allSlices = Find_Common();
+    let  okSlice  =false ;
+    let takenSlice = [] ;
+    for  (let slice of allSlices){
+        loop1:
+        for (let r = slice.startRow; r <= slice.endRow; r++) {
+            for (let  c= slice.startCol; c <= slice.endCol; c++){
+                if (!this.allArrays[r][c]){
+                    okSlice = false;
+                    break loop1;
+                }
+               okSlice = true ;
+            }
+        }
+        if (okSlice){
+            for (let r = slice.startRow; r <= slice.endRow; r++) {
+                for (let  c= slice.startCol; c <= slice.endCol; c++){
+                    this.allArrays [r][c] = 0 ;
+                }
+            }
+            takenSlice.push(slice)
+        }
+    }
+
+    console.log(takenSlice);
+    console.timeEnd('Ahmed&Eman');
+    return margeTaken(takenSlice);
+
+}
+ function calCells(){
+    let slices = sliceSlices();
+    let no_of_cells =0;
+    for (let slice of slices){
+
+        no_of_cells += slice.noOfCells;
+
+    }
+    console.log(no_of_cells);
+
+ }
+
+ function margeTaken (taken) {
+
+     for (let slice of taken) {
+         if (slice.noOfCells < this.condtions.maxNoOfCells) {
+             for (let sc= slice.startCol-1 ; sc >= 0 ; sc--){
+                 const noOfAddCells =  1 + slice.endRow - slice.startRow;
+                 if ((slice.noOfCells + noOfAddCells) <= this.condtions.maxNoOfCells) {
+                     let cellCheck = false;
+                     for (let i=0 ; i < noOfAddCells ; i++){
+                         if (this.allArrays[i+slice.startRow][sc]) {
+                             this.allArrays[i+slice.startRow][sc]= 0;
+                             cellCheck = true ;
+                         }else cellCheck = false ;
+                     }
+                    if(cellCheck){
+                        slice.startCol = sc ;
+                        slice.noOfCells += noOfAddCells ;
+                    }
+                 }
+             }
+             for (let sr= slice.startRow ; sr >= 0 ; sr--){
+                 const noOfAddCells =  1 + slice.endcol - slice.startCol;
+                 if ((slice.noOfCells + noOfAddCells) <= this.condtions.maxNoOfCells) {
+                     let cellCheck = false;
+                     for (let i=0 ; i < noOfAddCells ; i++){
+                         if (this.allArrays[sr][i+slice.startCol]) {
+                             this.allArrays[sr][i+slice.startCol]= 0;
+                             cellCheck = true ;
+                         }else cellCheck = false ;
+                     }
+                     if(cellCheck){
+                         slice.startRow = sr ;
+                         slice.noOfCells +=noOfAddCells;
+                     }
+
+                 }
+             }
+             for (let ec= slice.endcol ; ec < this.allArrays[0].length ; ec++){
+                 const noOfAddCells =  1 + slice.endRow - slice.startRow;
+
+                 if ((slice.noOfCells + noOfAddCells) <= this.condtions.maxNoOfCells) {
+                     let cellCheck = false;
+                     for (let i=0 ; i < noOfAddCells ; i++){
+                         if (this.allArrays[i+slice.startRow][ec]) {
+                             this.allArrays[i+slice.startRow][ec] =0;
+                             cellCheck = true ;
+                         }else cellCheck = false ;
+                     }
+                     if(cellCheck){
+                         slice.endcol = ec ;
+                         slice.noOfCells += noOfAddCells;
+                     }
+
+                 }
+             }
+             for (let er= slice.endRow ; er < this.allArrays.length ; er++){
+                 const noOfAddCells =  1 + slice.endcol - slice.startCol;
+                 if ((slice.noOfCells + noOfAddCells) <= this.condtions.maxNoOfCells) {
+                     let cellCheck = false;
+                     for (let i=0 ; i < noOfAddCells ; i++){
+                         if (this.allArrays[er][i+slice.startCol]) {
+                             this.allArrays[er][i+slice.startCol] = 0;
+                             cellCheck = true ;
+                         }else cellCheck = false ;
+                     }
+                     if(cellCheck){
+                         slice.endRow = er ;
+                         slice.noOfCells +=  noOfAddCells;
+                     }
+                     }
+
+             }
+         }
+     }
+     console.log(taken);
+     return taken ;
+     }

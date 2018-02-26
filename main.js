@@ -1,3 +1,4 @@
+
 window.onload = function () {
     this.takenSlices =[];
     let pushDone  = false ;
@@ -5,8 +6,12 @@ window.onload = function () {
     "use strict";
     const fileInput = document.getElementById('fileInput'),
         fileDisplayArea = document.getElementById('fileDisplayArea');
+     fileInput.addEventListener('click', function (e) {
+  			document.getElementsByClassName('mul5')[0].style.display='inline';
+  	});
+
+
     fileInput.addEventListener('change', function (e) {
-      	document.getElementsByClassName('mul5')[0].style.display='inline';
     	
         let file = fileInput.files[0],
             reader = new FileReader();
@@ -17,6 +22,7 @@ window.onload = function () {
             seprateString(text);
 
             let allMatches = getAllMatchSlices();
+            document.getElementsByClassName('mul5')[0].style.display='none';
             console.log(allMatches);
             calCells();
         };

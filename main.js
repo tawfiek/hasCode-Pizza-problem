@@ -1,6 +1,22 @@
 window.onload = function () {
     this.takenSlices =[];
-    let pushDone  = false ;
+    window.requestFileSystem  = window.requestFileSystem || window.webkitRequestFileSystem;
+
+
+    function onInitFs(fs) {
+
+        fs.root.getFile('log.txt', {create: true, exclusive: true}, function(fileEntry) {
+
+            console.log(fileEntry.isFile);
+            console.log(fileEntry.name );
+            console.log(fileEntry.fullPath);
+
+        });
+
+    }
+
+    window.requestFileSystem(window.TEMPORARY, 1024*1024, onInitFs);
+
 
     "use strict";
     const fileInput = document.getElementById('fileInput'),
@@ -21,6 +37,8 @@ window.onload = function () {
             calCells();
         };
         reader.readAsText(file);
+
+
 
     });
 
@@ -122,7 +140,7 @@ function getAllMatchSlices () {
 
 // *********************************** Find The Common Cells *********************************************************
 
-function Find_Common(){
+function findCommon(){
 	let possibleSlices = getAllMatchSlices();
 
 	for (const index in possibleSlices ) {
@@ -166,11 +184,11 @@ function Find_Common(){
             }
         }
 	}
-		console.log(possibleSlices.sort(function (a,b) {
-            const n = a.commonCells - b.commonCells;
-            if (n !==0 ) return n ;
-            return b.noOfCells - a.noOfCells
-        }));
+        // console.log(possibleSlices.sort(function (a,b) {
+        //     const n = a.commonCells - b.commonCells;
+        //     if (n !==0 ) return n ;
+        //     return b.noOfCells - a.noOfCells
+        // }));
 
 	    return possibleSlices.sort(function (a,b) {
              const n = b.noOfCells - a.noOfCells;
@@ -180,9 +198,9 @@ function Find_Common(){
 
 }
 
-function sliceSlices () {
+function slicePizza () {
     console.time("Ahmed&Eman")
-    const  allSlices = Find_Common();
+    const  allSlices = findCommon();
     let  okSlice  =false ;
     let takenSlice = [] ;
     for  (let slice of allSlices){
@@ -208,95 +226,124 @@ function sliceSlices () {
 
     console.log(takenSlice);
     console.timeEnd('Ahmed&Eman');
-    return margeTaken(takenSlice);
+    return takenSlice;
 
 }
+
+// ********************** calculate the number of taken cells and log it *************************
  function calCells(){
-    let slices = sliceSlices();
+    let slices = slicePizza();
     let no_of_cells =0;
     for (let slice of slices){
-
         no_of_cells += slice.noOfCells;
-
     }
     console.log(no_of_cells);
-
  }
 
- function margeTaken (taken) {
-
-     for (let slice of taken) {
-         if (slice.noOfCells < this.condtions.maxNoOfCells) {
-             for (let sc= slice.startCol-1 ; sc >= 0 ; sc--){
-                 const noOfAddCells =  1 + slice.endRow - slice.startRow;
-                 if ((slice.noOfCells + noOfAddCells) <= this.condtions.maxNoOfCells) {
-                     let cellCheck = false;
-                     for (let i=0 ; i < noOfAddCells ; i++){
-                         if (this.allArrays[i+slice.startRow][sc]) {
-                             this.allArrays[i+slice.startRow][sc]= 0;
-                             cellCheck = true ;
-                         }else cellCheck = false ;
-                     }
-                    if(cellCheck){
-                        slice.startCol = sc ;
-                        slice.noOfCells += noOfAddCells ;
-                    }
-                 }
-             }
-             for (let sr= slice.startRow ; sr >= 0 ; sr--){
-                 const noOfAddCells =  1 + slice.endcol - slice.startCol;
-                 if ((slice.noOfCells + noOfAddCells) <= this.condtions.maxNoOfCells) {
-                     let cellCheck = false;
-                     for (let i=0 ; i < noOfAddCells ; i++){
-                         if (this.allArrays[sr][i+slice.startCol]) {
-                             this.allArrays[sr][i+slice.startCol]= 0;
-                             cellCheck = true ;
-                         }else cellCheck = false ;
-                     }
-                     if(cellCheck){
-                         slice.startRow = sr ;
-                         slice.noOfCells +=noOfAddCells;
-                     }
-
-                 }
-             }
-             for (let ec= slice.endcol ; ec < this.allArrays[0].length ; ec++){
-                 const noOfAddCells =  1 + slice.endRow - slice.startRow;
-
-                 if ((slice.noOfCells + noOfAddCells) <= this.condtions.maxNoOfCells) {
-                     let cellCheck = false;
-                     for (let i=0 ; i < noOfAddCells ; i++){
-                         if (this.allArrays[i+slice.startRow][ec]) {
-                             this.allArrays[i+slice.startRow][ec] =0;
-                             cellCheck = true ;
-                         }else cellCheck = false ;
-                     }
-                     if(cellCheck){
-                         slice.endcol = ec ;
-                         slice.noOfCells += noOfAddCells;
-                     }
-
-                 }
-             }
-             for (let er= slice.endRow ; er < this.allArrays.length ; er++){
-                 const noOfAddCells =  1 + slice.endcol - slice.startCol;
-                 if ((slice.noOfCells + noOfAddCells) <= this.condtions.maxNoOfCells) {
-                     let cellCheck = false;
-                     for (let i=0 ; i < noOfAddCells ; i++){
-                         if (this.allArrays[er][i+slice.startCol]) {
-                             this.allArrays[er][i+slice.startCol] = 0;
-                             cellCheck = true ;
-                         }else cellCheck = false ;
-                     }
-                     if(cellCheck){
-                         slice.endRow = er ;
-                         slice.noOfCells +=  noOfAddCells;
-                     }
-                     }
-
-             }
-         }
-     }
-     console.log(taken);
-     return taken ;
-     }
+ // *************************************************************************************************
+ //
+ // function  margeTaken(taken) {
+ //    console.log(taken);
+ //     for ( let i = 0 ; i < taken.length ; i++) {
+ //         if (taken[i].noOfCells < this.condtions.maxNoOfCells) {
+ //             for (let sc= taken[i].startCol-1 ; sc >= 0 ; sc--){
+ //                 const noOfAddCells =  1 + taken[i].endRow - taken[i].startRow;
+ //                 if ((taken[i].noOfCells + noOfAddCells) <= this.condtions.maxNoOfCells) {
+ //                     let cellCheck = false;
+ //                     for (let i=0 ; i < noOfAddCells ; i++){
+ //                         if (this.allArrays[i+taken[i].startRow][sc]) {
+ //                             cellCheck = true ;
+ //                         }else {
+ //                             cellCheck = false;
+ //                             break;
+ //                         }
+ //                     }
+ //                    if(cellCheck){
+ //                        for (let i=0 ; i < noOfAddCells ; i++){
+ //                            this.allArrays[i+taken[i].startRow][sc]= 0;
+ //                        }
+ //                        taken[i].startCol = sc ;
+ //                        taken[i].noOfCells += noOfAddCells ;
+ //                    }else break ;
+ //                 }else break ;
+ //             }
+ //             for (let sr= taken[i].startRow-1 ; sr >= 0 ; sr--){
+ //                 const noOfAddCells =  1 + taken[i].endCol - taken[i].startCol;
+ //                 if ((taken[i].noOfCells + noOfAddCells) <= this.condtions.maxNoOfCells) {
+ //                     let cellCheck = false;
+ //                     for (let i=0 ; i < noOfAddCells ; i++){
+ //                         if (this.allArrays[sr][i+taken[i].startCol]) {
+ //                             cellCheck = true ;
+ //                         } else {
+ //                             cellCheck = false;
+ //                             break;
+ //                         }
+ //                     }
+ //                     if(cellCheck){
+ //                         for (let i=0 ; i < noOfAddCells ; i++){
+ //
+ //                             this.allArrays[sr][i+taken[i].startCol]= 0;
+ //                         }
+ //                         taken[i].startRow = sr ;
+ //                         taken[i].noOfCells +=noOfAddCells;
+ //                     }else {
+ //                         cellCheck = false;
+ //                         break;
+ //                     }
+ //
+ //                 }else break;
+ //             }
+ //             for (let ec= taken[i].endcol+1 ; ec < this.allArrays[0].length ; ec++){
+ //                 const noOfAddCells =  1 + taken[i].endRow - taken[i].startRow;
+ //
+ //                 if ((taken[i].noOfCells + noOfAddCells) <= this.condtions.maxNoOfCells) {
+ //                     let cellCheck = false;
+ //                     for (let i=0 ; i < noOfAddCells ; i++){
+ //                         if (this.allArrays[i + taken[i].startRow][ec]) {
+ //                             cellCheck = true;
+ //                         }else  {
+ //                             cellCheck = false;
+ //                             break;
+ //                         }
+ //                     }
+ //                     if(cellCheck){
+ //                         for (let i=0 ; i < noOfAddCells ; i++) this.allArrays[i+taken[i].startRow][ec] =0
+ //                         taken[i].endcol = ec ;
+ //                         taken[i].noOfCells += noOfAddCells;
+ //                     }else {
+ //                         cellCheck = false;
+ //                         break;
+ //                     }
+ //                 }else break;
+ //             }
+ //             for (let er= taken[i].endRow+1 ; er < this.allArrays.length ; er++){
+ //                 const noOfAddCells =  1 + taken[i].endCol - taken[i].startCol;
+ //                 if ((taken[i].noOfCells + noOfAddCells) <= this.condtions.maxNoOfCells) {
+ //                     let cellCheck = false;
+ //                     for (let i=0 ; i < noOfAddCells ; i++){
+ //                         if (this.allArrays[er][i+taken[i].startCol]) {
+ //                             cellCheck = true ;
+ //                         }else {
+ //                             cellCheck = false ;
+ //                             break;
+ //                         }
+ //                     }
+ //                     if(cellCheck){
+ //                         for (let i=0 ; i < noOfAddCells ; i++){
+ //                             this.allArrays[er][i+taken[i].startCol] = 0;
+ //                         }
+ //                         taken[i].endRow = er ;
+ //                         taken[i].noOfCells +=  noOfAddCells;
+ //                     } else {
+ //                         cellCheck = false;
+ //                         break;
+ //                     }
+ //                     }else break;
+ //
+ //             }
+ //         }
+ //     }
+ //     console.log(taken);
+ //     console.log(this.allArrays);
+ //     return taken ;
+ //     }

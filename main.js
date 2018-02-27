@@ -1,12 +1,10 @@
-
 window.onload = function () {
+	 "use strict";
     this.takenSlices =[];
-    let pushDone  = false ;
-
-    "use strict";
     const fileInput = document.getElementById('fileInput'),
         fileDisplayArea = document.getElementById('fileDisplayArea');
-     fileInput.addEventListener('click', function (e) {
+
+    fileInput.addEventListener('click', function (e) {
   			document.getElementsByClassName('mul5')[0].style.display='inline';
   	});
 
@@ -17,13 +15,10 @@ window.onload = function () {
             reader = new FileReader();
 
         reader.onload = function (e) {
-            let text = reader.result;
-            //fileDisplayArea.innerText = reader.result;            
+            let text = reader.result;          
             seprateString(text);
-
-            let allMatches = getAllMatchSlices();
+            getAllMatchSlices();
             document.getElementsByClassName('mul5')[0].style.display='none';
-            console.log(allMatches);
             calCells();
         };
         reader.readAsText(file);
@@ -32,7 +27,9 @@ window.onload = function () {
 
 };
 
-// ********************************************* Separating Sting *********************************************
+// *******************************************************************************************************************
+// ********************************************* Separating Input Sting  *********************************************
+
 function seprateString (text){
     let allArrays = [];
     let  arr = [];
@@ -73,11 +70,9 @@ function seprateString (text){
     return this.allArrays ;
 }
 
-// *****************************************************************************************
+// *******************************************************************************************************************
+// ************************************* Get Probabilities Of Slice Dimentions  **************************************
 
-
-
-// ************************************* Get probabilities **********************************
 function probabilities(min, max) {
     let probability = [];
     for (let num = min; num <= max; num++) {
@@ -91,8 +86,8 @@ function probabilities(min, max) {
 }
 
 
-// *****************************************************************************************
-
+// *******************************************************************************************************************
+// ************************************* Get All Matches Slices That Fit Conditions  *********************************
 
 function getAllMatchSlices () {
     let allMatches =[];
@@ -126,7 +121,8 @@ function getAllMatchSlices () {
    return allMatches ;
 }
 
-// *********************************** Find The Common Cells *********************************************************
+// *******************************************************************************************************************
+// *********************************** Find The Common Cells Between Possible Slices**********************************
 
 function Find_Common(){
 	let possibleSlices = getAllMatchSlices();
@@ -140,7 +136,8 @@ function Find_Common(){
             }
            let currntSlice = possibleSlices[index];
            let nextSlice = possibleSlices[i];
-           // ***************  For Rows ******************************
+           //*******************************************************************
+           // ***************  For Rows ****************************************
            if (currntSlice.endRow > nextSlice.endRow){
                 commanRows = nextSlice.endRow - currntSlice.startRow +1 ;
            } else if (currntSlice.endRow < nextSlice.endRow) {
@@ -152,9 +149,9 @@ function Find_Common(){
                    commanRows = currntSlice.endRow - nextSlice.startRow + 1 ;
                }
            }
-        //    ***************************************************************
-        //     ************* For Coll ***********************************
 
+        //*******************************************************************
+        //************* For Coll ********************************************
             if (currntSlice.endCol > nextSlice.endCol){
                 commanCol = nextSlice.endCol - currntSlice.startCol +1 ;
             } else if (currntSlice.endCol < nextSlice.endCol) {
@@ -172,11 +169,11 @@ function Find_Common(){
             }
         }
 	}
-		console.log(possibleSlices.sort(function (a,b) {
+		possibleSlices.sort(function (a,b) {
             const n = a.commonCells - b.commonCells;
             if (n !==0 ) return n ;
             return b.noOfCells - a.noOfCells
-        }));
+        });
 
 	    return possibleSlices.sort(function (a,b) {
              const n = b.noOfCells - a.noOfCells;
@@ -185,6 +182,9 @@ function Find_Common(){
         });
 
 }
+
+// *******************************************************************************************************************
+// *********************************** Get Slices That Does Not Share Any Cells **************************************
 
 function sliceSlices () {
     console.time("Ahmed&Eman")
@@ -212,14 +212,11 @@ function sliceSlices () {
         }
     }
 
-    console.log(takenSlice);
-    console.timeEnd('Ahmed&Eman');
     let element = document.getElementById("fileDisplayArea");
-
     element.innerHTML = takenSlice.length+"<br/>";
     let t ="";
     for(var i=0; i <takenSlice.length;i++){
-    	 t += takenSlice[i].startRow+" "+takenSlice[i].startCol+" "+takenSlice[i].endRow+" "+takenSlice[i].endCol+"<br />";
+    	t += takenSlice[i].startRow+" "+takenSlice[i].startCol+" "+takenSlice[i].endRow+" "+takenSlice[i].endCol+"<br />";
     	
     }
     element.innerHTML += t ;
@@ -228,6 +225,10 @@ function sliceSlices () {
     return takenSlice;
 
 }
+
+// *******************************************************************************************************************
+// *************************************** Calculate Number Of Cells *************************************************
+
  function calCells(){
     let slices = sliceSlices();
     let no_of_cells =0;
@@ -239,6 +240,9 @@ function sliceSlices () {
     console.log(no_of_cells);
 
  }
+ 
+ // *******************************************************************************************************************
+// *********************************** Merge Cells That Is Not Taken By Any Slice **************************************
 
 
  // function margeTaken (taken) {

@@ -1,44 +1,33 @@
+
 window.onload = function () {
     this.takenSlices =[];
-    window.requestFileSystem  = window.requestFileSystem || window.webkitRequestFileSystem;
-
-
-    function onInitFs(fs) {
-
-        fs.root.getFile('log.txt', {create: true, exclusive: true}, function(fileEntry) {
-
-            console.log(fileEntry.isFile);
-            console.log(fileEntry.name );
-            console.log(fileEntry.fullPath);
-
-        });
-
-    }
-
-    window.requestFileSystem(window.TEMPORARY, 1024*1024, onInitFs);
-
+    let pushDone  = false ;
 
     "use strict";
     const fileInput = document.getElementById('fileInput'),
         fileDisplayArea = document.getElementById('fileDisplayArea');
+     fileInput.addEventListener('click', function (e) {
+  			document.getElementsByClassName('mul5')[0].style.display='inline';
+  	});
+
+
     fileInput.addEventListener('change', function (e) {
+
         let file = fileInput.files[0],
             reader = new FileReader();
 
         reader.onload = function (e) {
             let text = reader.result;
-            fileDisplayArea.innerText = reader.result;
-            //seprate string in arrays
+            //fileDisplayArea.innerText = reader.result;
             seprateString(text);
 
             let allMatches = getAllMatchSlices();
+            document.getElementsByClassName('mul5')[0].style.display='none';
             console.log(allMatches);
             // sliceSlices();
             calCells();
         };
         reader.readAsText(file);
-
-
 
     });
 
@@ -227,6 +216,18 @@ function slicePizza () {
     console.log(takenSlice);
     console.timeEnd('Ahmed&Eman');
     return takenSlice;
+    let element = document.getElementById("fileDisplayArea");
+
+    element.innerHTML = takenSlice.length+"<br/>";
+    let t ="";
+    for(var i=0; i <takenSlice.length;i++){
+    	 t += takenSlice[i].startRow+" "+takenSlice[i].startCol+" "+takenSlice[i].endRow+" "+takenSlice[i].endCol+"<br />";
+
+    }
+    element.innerHTML += t ;
+
+
+    return takenSlice;
 
 }
 
@@ -235,9 +236,12 @@ function slicePizza () {
     let slices = slicePizza();
     let no_of_cells =0;
     for (let slice of slices){
+
         no_of_cells += slice.noOfCells;
+
     }
     console.log(no_of_cells);
+
  }
 
  // *************************************************************************************************

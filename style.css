@@ -22,11 +22,8 @@ img {
   max-width: 100%;
 }
 
-#fileDisplayArea {
+#outputArea {
   margin-top: 2em;
   width: 100%;
   overflow-x: auto;
-  text-align: center;
-  color: #FFFFFF;
-  font-size: medium;
 }
